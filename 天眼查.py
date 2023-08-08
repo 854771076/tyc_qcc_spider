@@ -1,6 +1,7 @@
-import requests,datetime,pandas as pd
+import requests,datetime,pandas as pd,time
 from sys import stderr
 from logging import *
+from settings import *
 ### 日志
 logger = getLogger(f'天眼查_{datetime.datetime.now()}')
 logger.setLevel(INFO)
@@ -47,15 +48,11 @@ def sreach_detailed(name:str)->dict:
         raise Exception(response.text)
     return data
 if __name__ == '__main__':
-    ### 文件信用代码的字段名
-    key_name='firm_code'
     ### 字段名
-    columns=[key_name,'firm_name_tyc','ope_scope_tyc','ind_econ_code_tyc','ind_econ_name_tyc']
+    columns=columns_tyc
     Result=pd.DataFrame(columns=columns)
     ### 是否从错误处继续
     index_in_error_file=True
-    ### 是否跳过错误
-    skip_error=True
     index=0
     
     if index_in_error_file:
@@ -67,10 +64,10 @@ if __name__ == '__main__':
             Result=pd.read_excel('output/天眼查.xlsx')
         except:
             index=0
-    if skip_error:
+    if skip_index:
         index+=1
     ### 读取文件并去重
-    df=pd.read_excel('input/名单匹配.xlsx').drop_duplicates()
+    df=pd.read_excel(file_name).drop_duplicates()
     ### 查询列表
     key_list=df[key_name].values.tolist()
     length=len(key_list)
@@ -111,6 +108,7 @@ if __name__ == '__main__':
             finally:
                 with open('logs/tyc_index.txt','w') as f:
                     f.write(str(index))
+                time.sleep(timesleep) 
     except:
         pass
     logger.info(f'爬取到{index}条数据，保存成功！')

@@ -7,6 +7,7 @@ import hashlib
 import requests,datetime,pandas as pd
 from sys import stderr
 from logging import *
+from settings import *
 ### 日志
 logger = getLogger(f'企查查_{datetime.datetime.now()}')
 logger.setLevel(INFO)
@@ -149,19 +150,12 @@ def qccspider(name:str):
     return res
 
 if __name__ == '__main__':
-    # user_cookie
-    # 用户cookie，填写自己的用户cookie,useragent
-    cookie = 'QCCSESSID=0dc43bac634c1da2146863b6a0; qcc_did=28fbb9c7-9dff-4aa5-ad18-b0acb3aa5dc3; UM_distinctid=189ab2a377a1a9-07e28810505d32-26031c51-1fa400-189ab2a377b16d3; acw_tc=3d808d2516913942121652333eab003c37d4bb2abfa64710822ec96190; CNZZDATA1254842228=825759271-1690793169-https%253A%252F%252Fwww.baidu.com%252F%7C1691393956'
-    useragent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36' 
-    ### 文件信用代码的字段名
-    key_name='firm_code'
     ### 字段名
-    columns=[key_name,'firm_name_qcc','ope_scope_qcc','ind_econ_code_qcc','ind_econ_name_qcc']
+    columns=columns_qcc
     Result=pd.DataFrame(columns=columns)
-    ### 是否从错误处继续
+    ### 是否继续上一次
     index_in_error_file=True
-    ### 是否跳过错误
-    skip_error=False
+    
     index=0
     
     if index_in_error_file:
@@ -173,10 +167,10 @@ if __name__ == '__main__':
             Result=pd.read_excel('output/企查查.xlsx')
         except:
             index=0
-    if skip_error:
+    if skip_index:
         index+=1
     ### 读取文件并去重
-    df=pd.read_excel('input/名单匹配.xlsx').drop_duplicates()
+    df=pd.read_excel(file_name).drop_duplicates()
     
     ### 查询列表
     key_list=df[key_name].values.tolist()
@@ -218,7 +212,7 @@ if __name__ == '__main__':
             finally:
                 with open('logs/qcc_index.txt','w') as f:
                     f.write(str(index))
-                time.sleep(10)  
+                time.sleep(timesleep)  
     except:
         pass
     logger.info(f'爬取到{index}条数据，保存成功！')
