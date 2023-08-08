@@ -1,0 +1,2 @@
+2023-08-07 16:03:25,999 - ERROR - 天眼查.py[:108] - 9111010634828856XF爬取失败-1/9501-error:{"data":null,"isLogin":0,"message":"must login","special":"","state":"warn","vipMessage":""}
+2023-08-08 09:08:45,164 - ERROR - 天眼查.py[:108] - 9111010634828856XF爬取失败-1/9501-error:{"data":null,"isLogin":0,"message":"must login","special":"","state":"warn","vipMessage":""}
